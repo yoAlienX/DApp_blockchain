@@ -17,14 +17,14 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` done, `[!]` blocked.
 
 - [~] Phase 0 — Setup
   - Started: 2026-11-02
-  - Current step: create the local Hardhat project and React frontend; GitHub details pending
+  - Current step: local project created and pushed to GitHub; dependency install is blocked in this environment
 
 ## Next
 
 ### Phase 0 — Setup (20 min)
-- [~] Create the local project structure; GitHub repo details are still required for the remote/push step
-- [ ] Root: install Hardhat dependencies and compile
-- [ ] Frontend: install Vite/React dependencies and build
+- [x] Create the local project structure and connect the GitHub remote on `main`
+- [!] Root: install Hardhat dependencies and compile — Error: `npm install` did not complete and no `node_modules/` or `package-lock.json` was created — Tried: sandboxed and approved network installs with retries disabled — Needs: npm registry access in the execution environment
+- [!] Frontend: install Vite/React dependencies and build — Error: blocked by the same npm registry access issue — Tried: approved network install — Needs: npm registry access in the execution environment
 - [ ] Create dummy test wallet in MetaMask (separate from any real wallet); copy address
 - [ ] Get Sepolia test ETH (need ~0.05); try a second faucet if the first fails
 - [ ] Create Alchemy or Infura account; copy Sepolia RPC URL
@@ -99,7 +99,7 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` done, `[!]` blocked.
 
 ## Blocked
 
-(none yet)
+- [!] Dependency verification — Error: `npm install` remains running without output and creates no install artifacts — Tried: sandboxed install, approved install, timeout/retry-limited install — Needs: network access to npm registry, then run `npm install`, `npm test`, and `npm run build`.
 
 Format for a blocked item:
 - [!] <task> — Error: <exact message> — Tried: <what you did> — Needs: <what you need from the user>
