@@ -23,6 +23,7 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` done, `[!]` blocked.
 
 ### Phase 0 — Setup (20 min)
 - [x] Create the local project structure and connect the GitHub remote on `main`
+- [x] Trace blank frontend screen: added a React error boundary, static loading fallback, dedicated hooks, and completed revoke/activity UI paths
 - [!] Root: install Hardhat dependencies and compile — Error: `npm install` did not complete and no `node_modules/` or `package-lock.json` was created — Tried: sandboxed and approved network installs with retries disabled — Needs: npm registry access in the execution environment
 - [!] Frontend: install Vite/React dependencies and build — Error: blocked by the same npm registry access issue — Tried: approved network install — Needs: npm registry access in the execution environment
 - [ ] Create dummy test wallet in MetaMask (separate from any real wallet); copy address
