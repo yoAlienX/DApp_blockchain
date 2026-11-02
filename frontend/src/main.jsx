@@ -10,6 +10,18 @@ import { config } from './config';
 import { EmptyState, FileDropzone, HashDisplay, LoadingSkeleton, Spinner, StatusBadge, Toast, TxLink, TxStatus } from './components';
 import './index.css';
 
+function StartupError() {
+  const [message, setMessage] = useState('');
+  React.useEffect(() => {
+    const show = (event) => setMessage(event.reason?.stack || event.reason?.message || String(event.reason || event.message || 'Unknown startup error'));
+    window.addEventListener('error', show);
+    window.addEventListener('unhandledrejection', show);
+    return () => { window.removeEventListener('error', show); window.removeEventListener('unhandledrejection', show); };
+  }, []);
+  if (!message) return null;
+  return <section style={{ position: 'fixed', inset: 'auto 1rem 1rem', zIndex: 9999, maxHeight: '45vh', overflow: 'auto', padding: '1rem', color: '#7f1d1d', background: '#fff1f2', border: '1px solid #fecdd3', borderRadius: '12px', font: '13px/1.5 system-ui' }}><strong>DocChain startup error</strong><pre style={{ whiteSpace: 'pre-wrap' }}>{message}</pre></section>;
+}
+
 function Navbar() {
   const wallet = useWallet();
   return <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur"><div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6"><Link to="/" className="flex shrink-0 items-center gap-2 font-semibold text-slate-900"><ShieldCheck className="text-indigo-600" />DocChain</Link><nav className="flex min-w-0 items-center gap-1 overflow-x-auto text-sm"><Link className="navlink" to="/">Verify</Link><Link className="navlink" to="/issue">Issue</Link><Link className="navlink" to="/activity">Activity</Link></nav><button onClick={wallet.connect} disabled={wallet.loading} className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700 disabled:opacity-60" aria-busy={wallet.loading}>{wallet.loading ? <Spinner /> : <WalletCards size={15} />}{wallet.loading ? 'Connecting…' : wallet.wrongNetwork ? 'Switch to Sepolia' : wallet.account ? `${wallet.account.slice(0, 6)}…${wallet.account.slice(-4)}` : 'Connect wallet'}</button></div>{wallet.error && <p className="mx-auto max-w-5xl px-4 pb-2 text-right text-xs text-rose-600">{wallet.error}</p>}</header>;
@@ -30,4 +42,6 @@ function ActivityPage() { const activity = useActivity(); return <Shell><div cla
 
 function App() { return <Routes><Route path="/" element={<VerifyPage />} /><Route path="/issue" element={<IssuePage />} /><Route path="/activity" element={<ActivityPage />} /></Routes>; }
 class ErrorBoundary extends React.Component { constructor(props) { super(props); this.state = { error: null }; } static getDerivedStateFromError(error) { return { error }; } render() { if (this.state.error) return <div className="min-h-screen bg-slate-50 p-8 font-sans text-slate-900"><div className="mx-auto max-w-xl rounded-2xl bg-white p-6 shadow-sm ring-1 ring-rose-200"><h1 className="text-2xl font-semibold">DocChain could not load</h1><p className="mt-3 text-sm text-slate-600">Refresh after checking the browser console. The application caught this error instead of showing a blank page.</p><pre className="mt-4 overflow-auto rounded-lg bg-slate-100 p-3 text-xs text-rose-700">{this.state.error.message}</pre></div></div>; return this.props.children; } }
-createRoot(document.getElementById('root')).render(<ErrorBoundary><BrowserRouter><App /></BrowserRouter></ErrorBoundary>);
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('DocChain root element #root is missing from index.html.');
+createRoot(rootElement).render(<ErrorBoundary><><BrowserRouter><App /></BrowserRouter><StartupError /></></ErrorBoundary>);
