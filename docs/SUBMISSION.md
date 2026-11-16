@@ -23,9 +23,9 @@ Fill from actual confirmed operations. The deployment script creates a public ma
 
 | Evidence | Actual value |
 | --- | --- |
-| Submission date / deadline | Pending confirmation |
-| Repository URL | Pending |
-| Hosted application URL | Pending |
+| Submission date / deadline | 17 Nov 2026 |
+| Repository URL | <https://github.com/yoAlienX/DApp_blockchain> |
+| Hosted application URL | <https://sealmark-dapp.vercel.app> |
 | Network / chain ID | Sepolia / 11155111 |
 | Registry address | `0x1f188319a11993F6436EB8cBE1Ca5FC4C12C816E` |
 | Registry owner (public address) | `0xd48ea9481804f5DeF538744493830260e60D7a53` |

@@ -2,6 +2,8 @@
 
 **Decentralized document verification and authority registry on the Ethereum Sepolia test network.**
 
+**Live Deployment:** <https://sealmark-dapp.vercel.app> · **Smart Contract (Sepolia):** [`0x1f188319a11993F6436EB8cBE1Ca5FC4C12C816E`](https://sepolia.etherscan.io/address/0x1f188319a11993F6436EB8cBE1Ca5FC4C12C816E)
+
 SealMark allows authorized issuing institutions to anchor cryptographic SHA-256 document fingerprints (`bytes32`) on-chain using the `DocChainRegistry` smart contract. Citizens, employers, and third parties can verify any file or SHA-256 hash directly in the browser without MetaMask or file uploads—document bytes and filenames never leave the user's device.
 
 ## Features
@@ -28,6 +30,7 @@ SealMark allows authorized issuing institutions to anchor cryptographic SHA-256 
 | **Deployment Block** | `12145646` |
 | **Contract Owner & Authorized Issuer** | `0xd48ea9481804f5DeF538744493830260e60D7a53` |
 | **Issuer Authorization Transaction** | [`0xdd75f1aa99937828620683e5d807e5c1cb9bed79d8d1268c8506abbae3ffded1`](https://sepolia.etherscan.io/tx/0xdd75f1aa99937828620683e5d807e5c1cb9bed79d8d1268c8506abbae3ffded1) |
+| **Live Hosted Frontend (Vercel)** | <https://sealmark-dapp.vercel.app> |
 
 ## Project Structure
 
