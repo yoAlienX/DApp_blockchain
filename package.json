@@ -2,6 +2,23 @@
   "name": "docchain-dapp",
   "version": "1.0.0",
   "private": true,
-  "scripts": {"compile": "hardhat compile", "test": "hardhat test", "deploy": "hardhat run scripts/deploy.js --network sepolia", "add-issuer": "hardhat run scripts/addIssuer.js --network sepolia"},
-  "devDependencies": {"@nomicfoundation/hardhat-toolbox": "^5.0.0", "dotenv": "^16.4.5", "hardhat": "^2.22.15"}
+  "engines": { "node": ">=22.12.0 <25" },
+  "scripts": {
+    "compile": "hardhat compile && node scripts/syncAbi.js",
+    "test": "hardhat test",
+    "test:unit": "node --test frontend/test/*.test.js",
+    "test:e2e": "playwright test",
+    "check": "npm run compile && npm test && npm run test:unit && npm --prefix frontend run build",
+    "preflight": "node scripts/preflight.js",
+    "deploy": "npm run preflight && hardhat run scripts/deploy.js --network sepolia",
+    "add-issuer": "node scripts/preflight.js --registry && hardhat run scripts/addIssuer.js --network sepolia",
+    "check-deployment": "node scripts/preflight.js --registry --frontend",
+    "sync-abi": "node scripts/syncAbi.js"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "5.0.0",
+    "@playwright/test": "1.65.0",
+    "dotenv": "16.6.1",
+    "hardhat": "2.29.1"
+  }
 }

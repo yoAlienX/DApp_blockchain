@@ -1,134 +1,68 @@
-# TODO.md — Live Task Tracker for DocChain
+# DocChain — current completion tracker
 
-Reference files (read these first, in this order):
-1. PROJECT.md — why the project exists and its limits
-2. CONTEXT.md — what each module must do, the contract rules, the UI design
-3. PLAN.md — the phases and time boxes
-4. AGENT.md — the rules you must follow
+Updated: **7 November 2026** (Asia/Kolkata).
+Original planning deadline: **2 November 2026, 19:00**; historical, not the current submission deadline.
+Current submission deadline: **not provided**.
 
-Deadline: **today, 2 November 2026, 19:00.**
-Session start time: 2026-11-02 (Codex session)
-
-Status legend: `[ ]` not started, `[~]` in progress, `[x]` done, `[!]` blocked.
-
----
+Reference: `PROJECT.md`, `CONTEXT.md`, `PLAN.md`, and `AGENT.md`. The original phased plan is retained as background; this file reflects the verified implementation rather than the old installation blocker.
 
 ## In progress
 
-- [~] Phase 0 — Setup
-  - Started: 2026-11-02
-  - Current step: local project created and pushed to GitHub; dependency install is blocked in this environment
-
-## Next
-
-### Phase 0 — Setup (20 min)
-- [x] Create the local project structure and connect the GitHub remote on `main`
-- [x] Trace blank frontend screen: added a React error boundary, static loading fallback, dedicated hooks, and completed revoke/activity UI paths
-- [!] Root: install Hardhat dependencies and compile — Error: `npm install` did not complete and no `node_modules/` or `package-lock.json` was created — Tried: sandboxed and approved network installs with retries disabled — Needs: npm registry access in the execution environment
-- [!] Frontend: install Vite/React dependencies and build — Error: blocked by the same npm registry access issue — Tried: approved network install — Needs: npm registry access in the execution environment
-- [ ] Create dummy test wallet in MetaMask (separate from any real wallet); copy address
-- [ ] Get Sepolia test ETH (need ~0.05); try a second faucet if the first fails
-- [ ] Create Alchemy or Infura account; copy Sepolia RPC URL
-- [ ] Exit check: `npx hardhat compile` runs; `npm run dev` shows starter page
-
-### Phase 1 — Smart contract (40 min)
-- [ ] Write `contracts/DocChainRegistry.sol` per CONTEXT.md section 3 (owner, issuers, records, custom errors, events)
-- [ ] Write `test/DocChainRegistry.test.js` covering all 11 rules in PLAN.md Phase 1
-- [ ] Run `npx hardhat test` — all green
-- [ ] Run `npx hardhat compile` — ABI available in artifacts
-
-### Phase 2 — Deploy to Sepolia (15 min)
-- [ ] Create root `.env` (git-ignored) and `.env.example`
-- [ ] Add Sepolia network to `hardhat.config.js` (chainId 11155111, read from env)
-- [ ] Write `scripts/deploy.js`
-- [ ] Deploy to Sepolia; record contract address: ____________________
-- [ ] Write `scripts/addIssuer.js`; add dummy wallet as issuer
-- [ ] Verify on Etherscan (time box 5 min; skip if it fails)
-
-### Phase 3 — Frontend: wallet and chain (50 min)
-- [ ] `frontend/.env.example` with the four VITE_ variables
-- [ ] Copy ABI `abi` field into `frontend/src/abi/DocChainRegistry.json`
-- [ ] `src/config.js` with env validation
-- [ ] `src/lib/chain.js` (read provider, browser provider, network guard, contract factory, error mapping)
-- [ ] `src/hooks/useWallet.js` (connect, disconnect, account and chain listeners; silent restore with `eth_accounts`)
-- [ ] `src/hooks/useContract.js`
-- [ ] Navbar with four wallet button states
-- [ ] Routes: `/` Verify, `/issue`, `/activity`
-- [ ] Smoke test: connect, switch to Sepolia, address displayed
-
-### Phase 4A — Hashing (10 min)
-- [ ] `src/lib/hash.js` (SHA-256 via Web Crypto, `0x` hex, 25 MB size guard)
-- [ ] `FileDropzone` component
-- [ ] `HashDisplay` component with copy button
-
-### Phase 4B — Verify page (20 min)
-- [ ] `useVerify` hook
-- [ ] Four result states with `StatusBadge` (Verified, Revoked, Not registered, Error)
-- [ ] Issuer address and issue date shown when relevant
-- [ ] Explainer box: what a match proves and what it does not
-- [ ] Works with no wallet connected
-
-### Phase 4C — Issue page (25 min)
-- [ ] `useIssue` hook with state machine (idle, hashing, awaiting-signature, pending, success, error)
-- [ ] Non-issuer state: form disabled with explanation
-- [ ] Issuer state: hash file, call `issue(hash)`, show `TxStatus` with Etherscan link
-- [ ] Handle "already issued" with a clear message
-- [ ] Revoke panel: revoke only hashes issued by the connected wallet
-
-### Phase 4D — Activity page (5 min)
-- [ ] `useActivity` hook (last 5000 blocks, merged and sorted)
-- [ ] List with `EmptyState` and `LoadingSkeleton`
-- [ ] End-to-end check: issue → Verified → revoke → Revoked → both show in Activity
-
-### Phase 5 — UI polish (25 min)
-- [ ] Apply design tokens from CONTEXT.md section 4
-- [ ] Inter font
-- [ ] Toasts, skeletons, empty states
-- [ ] Check 375px mobile and 1440px desktop; no horizontal overflow
-- [ ] Keyboard focus visible on all controls
-- [ ] Page title "DocChain" and favicon
-
-### Phase 6 — Documentation and submission (30 min)
-- [ ] README.md with all sections (description, features, tech stack, structure, deploy steps, run steps, contract address and network, screenshots, limitations)
-- [ ] Screenshots saved to `docs/screenshots/` (Verify result, Issue page at minimum)
-- [ ] Final: `npx hardhat test` passes; `npm run build` passes; `git status` shows no `.env`
-- [ ] Commit and push; repo is public; README renders on GitHub
-
-### Phase 7 — Buffer
-- [ ] Full demo on a fresh browser profile
-- [ ] Fix visible bugs only; no new features
-
-## Blocked
-
-- [!] Dependency verification — Error: `npm install` remains running without output and creates no install artifacts — Tried: sandboxed install, approved install, timeout/retry-limited install — Needs: network access to npm registry, then run `npm install`, `npm test`, and `npm run build`.
-
-Format for a blocked item:
-- [!] <task> — Error: <exact message> — Tried: <what you did> — Needs: <what you need from the user>
+- No remaining local implementation task. Public deployment and submission evidence need user configuration; see Blocked and Next.
 
 ## Done
 
-(none yet)
+- [x] Existing dependency installation recovered and version ranges stabilized; clean `npm ci` installs succeed at root and frontend. Both lockfiles retained. Node 24 recorded in `.nvmrc` and CI.
+- [x] Existing Solidity rules preserved; no contract-source/API changes. Full generated ABI now includes owner/issuer getters and is checked against the compiled artifact.
+- [x] Contract access control, timestamps, event arguments, duplicates, removed-issuer behavior, revocation permanence, and altered files verified: **17 Hardhat tests pass**.
+- [x] Shared wallet context replaces independent navbar/page wallet state; silent restore, explicit connect, local disconnect, account changes, network changes, and add/switch network covered by browser tests.
+- [x] Public configuration validated without startup crashes; explicit setup notice; read RPC network/contract-code checks; write-time network/account/permission checks.
+- [x] Browser-local hashing, 25 MB guard, exact-byte behavior, safe error mapping, file-read failures, and adaptive event pagination covered by **9 helper tests**.
+- [x] Issue/revoke transaction states separated, pending explorer links retained, duplicate record displayed, forms locked during requests, and permanent revocation acknowledgement required.
+- [x] Removed issuers can revoke their own existing records, matching the contract; ownership and current revocation state checked again before signing.
+- [x] Public Verify retains issuer/date on revoked records, preserves fingerprints after RPC errors, and supports retry. A missing record is not described as forgery.
+- [x] Activity scans up to the latest 5,000 blocks in bounded/adaptive ranges, orders same-block events, supports refresh/pagination, and does not label failed RPC requests as empty history.
+- [x] Responsive three-page UI, active navigation, focus styles, labeled inputs, secure clipboard error handling, favicon, privacy/trust explanation, and mobile overflow checks.
+- [x] Production bundle split into React/Ethereum/page chunks; build succeeds without size warnings. SPA hosting fallbacks included.
+- [x] **10 Playwright tests pass**, including actual local-EVM issue → verify → revoke → activity, wallet-free reads, denied signatures, pending confirmations, changed wallet/network, mobile layouts, and production-preview setup rendering.
+- [x] Actual unconfigured UI screenshots captured and visually inspected. They are explicitly not public Sepolia evidence.
+- [x] Deployment preflight, safe error reporting, public deployment manifests, idempotent issuer authorization, frontend/deployment consistency check, and ABI synchronization scripts implemented.
+- [x] README rewritten; detailed `docs/SETUP.md`, `docs/SUBMISSION.md`, and `docs/VERIFICATION.md` added with requirements, troubleshooting, hosting, demo script, and evidence worksheet.
+- [x] Synthetic original/altered demo files and exact fingerprints supplied. Git attributes preserve their original bytes.
+- [x] Local `npm run check`, browser tests, `git diff --check`, environment ignore/tracking checks, and npm dependency audits completed. Root development-tooling advisories are disclosed, not hidden.
+- [x] GitHub CI workflow added; remote CI execution remains unverified. No commit, push, branch creation, or hosting/deployment action performed.
 
-Format for a done item:
-- [x] <task> — <one line of verification, e.g. "11/11 tests pass" or "tx 0x… confirmed">
+## Blocked
+
+- [!] Sepolia preflight/deployment — exact result: `Set SEPOLIA_RPC_URL to an HTTPS Sepolia endpoint in the root .env.` Root `.env` values remain empty; frontend `.env` is absent. Asked the user whether a deployment, funded test wallet, and RPC provider already exist. Needs: local configuration, testnet funds, and decision to reuse or deploy. **Never request the private key in chat.**
+- [!] Public hosting — no hosting account/project or production URL selected. Detailed static-host setup supplied; no external hosting action authorized/executed.
+- [!] Final submission evidence — no real deployment/issue/revoke transaction hashes, wallet-free live result, or live screenshots available. Local EVM transactions and test addresses must not fill this gap.
+- [!] Repository submission/CI — no recognized origin URL confirmed in this session; repository URL/access and course submission instructions still need confirmation.
+
+## Next — user-assisted completion
+
+1. Confirm the actual submission deadline and whether an existing DocChain Sepolia deployment should be reused.
+2. Follow `docs/SETUP.md`: create/fund a dedicated test-only wallet and configure root RPC/key values locally.
+3. Run preflight; deploy only if necessary; record the real manifest/address/transaction.
+4. Authorize the actual MetaMask issuer and configure the frontend’s four public values.
+5. Run `npm run check-deployment`; validate real MetaMask/CORS/RPC behavior.
+6. Host the frontend over HTTPS and test direct route refreshes.
+7. Follow `docs/SUBMISSION.md` to record the full real Sepolia demo, take live screenshots, and complete the README deployment table.
+8. Review source/lockfiles/public evidence and repository access before manually committing/pushing/submitting.
 
 ## Decisions
 
-Record every spec ambiguity here with the choice made and the reason.
-- Build and document all offline/local functionality first because no repository URL, Sepolia RPC URL, deployer key, or contract address was supplied. README will use an explicit pending-deployment placeholder, never a fake address.
+- Keep Solidity 0.8.20, Hardhat 2/toolbox, ethers v6, React/Vite/Tailwind 3, and the Sepolia-only application. No backend, database, IPFS, authentication system, AI dependency, token, or admin page.
+- Add `@playwright/test` as a development-only dependency to catch real-browser integration regressions and capture genuine UI screenshots; no extra unit-test framework is needed.
+- Isolate test EVM configuration in `e2e/hardhat.config.cjs`; it uses Sepolia’s chain ID only to exercise guards. No local chain is offered as a user-facing deployment option or represented as public Sepolia.
+- Keep removed-issuer revocation consistent with the contract. Current whitelist membership is not an extra requirement for revoking that issuer’s old records.
+- Retain root tooling’s known audit findings rather than applying a breaking Hardhat/toolbox migration with `npm audit fix --force`. No production-security claim is made.
+- Keep all environment secrets untouched and all live-deployment fields explicitly pending. No fake addresses/transactions or generated mockups in submission evidence.
+- Updated the historical deadline wording rather than assuming the old “today” still applies.
 
-## Suggested later (do not implement now)
+## Suggested later (not implemented)
 
-- Salted hashes (random nonce per document) for stronger privacy
-- Batch issuance for multiple documents
-- Verifiable-credential or PDF-signature integration
-- Mainnet deployment and audit
-- Dark mode
-- Admin page for managing issuers in the UI
-
-## Cut order if time runs short
-
-1. Simplify Phase 5 to the essentials (fonts and empty states only).
-2. Reduce Phase 4D to a plain list of `DocumentIssued` events.
-3. Reduce the revoke panel to one button with a confirmation step.
-4. Never cut: contract, tests, deployment, Verify and Issue flows, README, screenshots, GitHub push.
+- Audited owner/key recovery and issuer identity governance.
+- Salted records for stronger privacy, batch issuance, and verifiable credentials.
+- Carefully tested tooling migration addressing development dependency advisories.
+- Real Firefox/MetaMask coverage and robust RPC failover for a production design.

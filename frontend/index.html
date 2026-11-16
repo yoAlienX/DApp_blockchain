@@ -1,1 +1,53 @@
-<!doctype html><html><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="description" content="Verify document fingerprints on the Sepolia blockchain"/><title>DocChain</title></head><body><div id="root"><main style="font-family:system-ui,sans-serif;padding:3rem;color:#0f172a"><h1>Loading DocChain…</h1><p>If this message remains, open the browser console and check the Vite build output.</p></main></div><script type="module" src="/src/main.jsx"></script></body></html>
+<!doctype html>
+<html lang="en" style="color-scheme: light; background-color: #f8fafc; color: #0f172a;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="SealMark — Public document fingerprint verification and authority issuance on Ethereum Sepolia." />
+    <meta name="theme-color" content="#f8fafc" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>SealMark — Document Verification on Sepolia</title>
+    <script>
+      try {
+        if (localStorage.getItem('sealmark_theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+          document.documentElement.style.backgroundColor = '#020617';
+          document.documentElement.style.color = '#f8fafc';
+        }
+      } catch (e) {}
+    </script>
+    <style>
+      @keyframes sm-spin { to { transform: rotate(360deg); } }
+      @keyframes sm-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+      .sm-boot {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+        padding: 24px;
+        text-align: center;
+      }
+      .sm-ring-wrap { position: relative; width: 76px; height: 76px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+      .sm-ring { position: absolute; inset: 0; border-radius: 9999px; border: 2.5px solid #e2e8f0; border-top-color: #2563eb; animation: sm-spin 1.1s linear infinite; }
+      .sm-badge { width: 46px; height: 46px; border-radius: 14px; background: #2563eb; color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.22); animation: sm-pulse 1.5s ease-in-out infinite; }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="sm-boot">
+        <div class="sm-ring-wrap">
+          <div class="sm-ring"></div>
+          <div class="sm-badge">S</div>
+        </div>
+        <div style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">SealMark</div>
+        <div style="margin-top: 6px; font-size: 13px; color: #64748b;">Initializing Sepolia verification workspace…</div>
+      </div>
+    </div>
+    <noscript>Enable JavaScript to calculate document fingerprints locally and verify records on Sepolia.</noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

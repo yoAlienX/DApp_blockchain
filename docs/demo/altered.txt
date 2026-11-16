@@ -1,0 +1,10 @@
+DOCCHAIN DEMONSTRATION DOCUMENT
+
+Project: DocChain
+Recipient: Demo Student (fictional)
+Reference: DOCCHAIN-DEMO-001
+Award: Blockchain Project Completion
+Grade: B
+
+This is synthetic test data, not an official certificate.
+Keep the exact bytes of this file when demonstrating verification.

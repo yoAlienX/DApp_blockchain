@@ -1,14 +1,18 @@
 const hre = require("hardhat");
-require("dotenv").config();
+const { settings, assertSepolia, reportError, SetupError } = require('./environment');
 
 async function main() {
-  const address = process.env.ISSUER_ADDRESS;
-  const contractAddress = process.env.CONTRACT_ADDRESS;
-  if (!address || !contractAddress) throw new Error("Set ISSUER_ADDRESS and CONTRACT_ADDRESS in .env");
+  const { issuerAddress: address, contractAddress } = settings({ registry: true });
+  await assertSepolia(hre.ethers.provider);
+  if (await hre.ethers.provider.getCode(contractAddress) === '0x') throw new SetupError('No registry contract exists at this Sepolia address.');
   const registry = await hre.ethers.getContractAt("DocChainRegistry", contractAddress);
+  const [signer] = await hre.ethers.getSigners();
+  if ((await registry.owner()).toLowerCase() !== signer.address.toLowerCase()) throw new SetupError('Only this registry owner can authorize an issuer.');
+  if (await registry.isIssuer(address)) { console.log(`Issuer already authorized: ${address}. No transaction sent.`); return; }
   const tx = await registry.addIssuer(address);
-  await tx.wait();
-  console.log(`Issuer added: ${address}`);
+  console.log(`Submitted issuer authorization: ${tx.hash}`);
+  await tx.wait(1);
+  console.log(`Issuer added: ${address}\nTransaction: ${tx.hash}`);
 }
 
-main().catch((error) => { console.error(error); process.exitCode = 1; });
+main().catch(reportError);

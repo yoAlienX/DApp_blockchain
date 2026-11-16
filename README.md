@@ -1,99 +1,116 @@
-# DocChain
+# SealMark
 
-DocChain is a proof-of-concept decentralized application for tamper-evident document issuance and verification. An authorized issuer registers only a document's SHA-256 fingerprint on-chain. Anyone can later upload the exact file and check whether it matches the public Sepolia record, who issued it, and whether it has been revoked. The document itself never leaves the verifier's browser.
+**Decentralized document verification and authority registry on the Ethereum Sepolia test network.**
+
+SealMark allows authorized issuing institutions to anchor cryptographic SHA-256 document fingerprints (`bytes32`) on-chain using the `DocChainRegistry` smart contract. Citizens, employers, and third parties can verify any file or SHA-256 hash directly in the browser without MetaMask or file uploads—document bytes and filenames never leave the user's device.
 
 ## Features
 
-- Solidity registry with owner-managed issuer whitelist.
-- Authorized issuers can issue and revoke document hashes.
-- Wallet connection through MetaMask and ethers.js v6.
-- Browser-side SHA-256 hashing with a 25 MB file-size guard.
-- Wallet-free verification through a read-only Sepolia provider.
-- Clear verified, revoked, not-registered, loading, and error states.
-- Responsive React/Tailwind interface.
+- **Smart Contract Registry (`DocChainRegistry.sol`):** Owner-managed issuer whitelist (`addIssuer`, `removeIssuer`), tamper-evident document registration (`issue`), permanent revocation by the original issuer (`revoke`), and zero-gas public lookup (`verify`, `isIssuer`).
+- **Wallet-Free Public Verification:** Verify documents by file drop (local Web Crypto SHA-256 hashing up to 25 MB) or by pasting a `0x`-prefixed SHA-256 hash.
+- **Role-Based Access Control:** Separate workflows for **Standard Users** (verify documents, view audit logs, customize profile) and **Authority Admins** (connect MetaMask on Sepolia to issue, revoke, and administer issuers).
+- **Live On-Chain Activity Feed:** Queries `DocumentIssued` and `DocumentRevoked` events across the latest 5,000 Sepolia blocks with type filters (`All`, `Issued`, `Revoked`), search, pagination, and Sepolia Etherscan links.
+- **Interactive UI & Account Profiles:** Progress-gated splash loader, particle-animated landing page with a flippable live usage line chart, radial light/dark theme transition, Guide & FAQ page, profile/avatar customization, PBKDF2-secured local accounts, and session resume after logout.
 
-## Tech stack
+## Tech Stack
 
-Solidity `^0.8.20`, Hardhat, JavaScript, React, Vite, Tailwind CSS v3, `react-router-dom`, `lucide-react`, and ethers.js v6.
+- **Smart Contract:** Solidity `0.8.20`, Hardhat `2.29.1`, Chai
+- **Frontend:** React `19`, Vite `8`, Tailwind CSS `3`, React Router `7`, `lucide-react`, `ethers.js` `6`
+- **Testing:** Hardhat unit tests, Node `--test` helper tests, Playwright browser E2E tests
 
-## Project structure
+## Contract Address & Test Network
+
+| Field | Value |
+| --- | --- |
+| **Test Network** | Ethereum Sepolia (`Chain ID: 11155111`) |
+| **Contract Address** | [`0x1f188319a11993F6436EB8cBE1Ca5FC4C12C816E`](https://sepolia.etherscan.io/address/0x1f188319a11993F6436EB8cBE1Ca5FC4C12C816E) |
+| **Deployment Transaction** | [`0xae984d7a14e39004fc9ef356447f31cbbdee400e2a8b6d8795f15aed4c5747e6`](https://sepolia.etherscan.io/tx/0xae984d7a14e39004fc9ef356447f31cbbdee400e2a8b6d8795f15aed4c5747e6) |
+| **Deployment Block** | `12145646` |
+| **Contract Owner & Authorized Issuer** | `0xd48ea9481804f5DeF538744493830260e60D7a53` |
+| **Issuer Authorization Transaction** | [`0xdd75f1aa99937828620683e5d807e5c1cb9bed79d8d1268c8506abbae3ffded1`](https://sepolia.etherscan.io/tx/0xdd75f1aa99937828620683e5d807e5c1cb9bed79d8d1268c8506abbae3ffded1) |
+
+## Project Structure
 
 ```text
-contracts/DocChainRegistry.sol  Smart contract
-test/                           Hardhat tests
-scripts/                        Deployment and issuer scripts
-frontend/src/                   React UI and blockchain interaction layer
+contracts/          Solidity smart contract (DocChainRegistry.sol)
+test/               Hardhat smart contract & ABI tests
+scripts/            Preflight, Sepolia deployment, issuer authorization, ABI sync
+deployments/        Recorded public deployment manifest
+frontend/src/       React UI (Landing, Verify, Admin/Issue, Activity, FAQ, Profile, Login)
+frontend/test/      Frontend unit tests (hashing, auth, errors, config, activity)
+e2e/                Playwright end-to-end tests against an isolated local EVM
+docs/               Setup runbook, technical viva report, and demo files
 ```
 
-## Deploy the smart contract
+## Steps to Deploy the Smart Contract
 
-1. Install dependencies:
+> Use a dedicated **test-only** wallet funded with Sepolia test ETH. Never commit `.env` files or private keys.
 
+1. **Install dependencies:**
    ```bash
-   npm install
-   cd frontend && npm install && cd ..
+   npm ci
+   npm --prefix frontend ci
    ```
 
-2. Copy `.env.example` to `.env` and add a Sepolia RPC URL and a dummy test-wallet private key. Never commit `.env`.
-
-3. Compile and test:
-
-   ```bash
-   npm run compile
-   npm test
+2. **Configure root `.env` from `.env.example`:**
+   ```env
+   SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY
+   DEPLOYER_PRIVATE_KEY=0xYOUR_TEST_WALLET_PRIVATE_KEY
+   ISSUER_ADDRESS=0xYOUR_METAMASK_PUBLIC_ADDRESS
+   CONTRACT_ADDRESS=
    ```
 
-4. Deploy to Sepolia:
-
+3. **Run preflight and deploy to Sepolia:**
    ```bash
+   npm run preflight
    npm run deploy
    ```
+   The deploy script writes the deployment manifest to `deployments/sepolia-<address>.json`.
 
-5. Set `CONTRACT_ADDRESS` and `ISSUER_ADDRESS` in `.env`, then add the issuer:
-
+4. **Authorize the issuing wallet:**
+   Copy the deployed address into `CONTRACT_ADDRESS` in root `.env`, then run:
    ```bash
    npm run add-issuer
    ```
 
-6. Verify the contract if desired:
+## Steps to Run the Frontend
 
-   ```bash
-   npx hardhat verify --network sepolia CONTRACT_ADDRESS
+1. **Create `frontend/.env` from `frontend/.env.example`:**
+   ```env
+   VITE_CONTRACT_ADDRESS=0x1f188319a11993F6436EB8cBE1Ca5FC4C12C816E
+   VITE_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY
+   VITE_CHAIN_ID=11155111
+   VITE_EXPLORER_URL=https://sepolia.etherscan.io
    ```
 
-## Run the frontend
+2. **Verify deployment alignment and start the development server:**
+   ```bash
+   npm run check-deployment
+   npm --prefix frontend run dev
+   ```
+   Open the local URL printed by Vite (e.g., `http://localhost:5173`).
 
-Copy `frontend/.env.example` to `frontend/.env`, then set the deployed contract address and a public Sepolia RPC URL:
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-For a production build:
-
-```bash
-npm run build
-```
-
-## Contract address and test network
-
-- Network: Sepolia
-- Chain ID: `11155111`
-- Contract address: **Pending Sepolia deployment**
-- Etherscan: **Pending contract address**
-
-The address and link above must be updated after deployment; no address is invented in this repository.
+3. **Build for production or run all automated tests:**
+   ```bash
+   npm run check
+   npm run test:e2e
+   ```
 
 ## Screenshots
 
-Add screenshots from the running application to `docs/screenshots/` before submission. The placeholders below are intentionally not fake screenshots.
+### Landing Page & MetaMask Sepolia Wallet
+![SealMark landing page with MetaMask connected to Sepolia](docs/screenshots/landing-sepolia.jpg)
 
-![Verify page screenshot placeholder](docs/screenshots/verify-page.png)
+### Document Verification (Wallet-Free SHA-256 Check)
+![SealMark document verification page on Sepolia](docs/screenshots/verify-sepolia.png)
 
-![Issue page screenshot placeholder](docs/screenshots/issue-page.png)
+### Live On-Chain Activity Audit Log
+![SealMark live Sepolia activity feed showing confirmed issuance transactions](docs/screenshots/activity-sepolia.png)
 
-## Limitations and future work
+### Guide & Frequently Asked Questions
+![SealMark guide and FAQ page](docs/screenshots/faq-sepolia.png)
 
-This is a proof of concept on a test network. A matching hash proves file integrity relative to the issuer's record, not that the document's contents are truthful. Issuer trust, wallet key management, exact-file sensitivity, public hash permanence, privacy-law questions, and testnet-only operation remain limitations. Future work could include salted hashes, batch issuance, verifiable-credential integration, and audited production deployment.
+## Documentation
+
+- [Technical & Viva Report](docs/REPORT.md) — Architecture, smart contract mechanics, `ethers.js` interaction flow, and viva Q&A notes.
+- [Setup Runbook](docs/SETUP.md) — Detailed wallet, faucet, RPC, and hosting instructions.

@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
-import { browserProvider, contract, readProvider } from '../lib/chain';
+import { useCallback } from 'react';
+import { readRegistry, writableRegistry } from '../lib/chain';
+import { useWallet } from './useWallet';
 
 export function useContract({ writable = false } = {}) {
-  return useMemo(() => (writable ? contract(browserProvider()) : contract(readProvider())), [writable]);
+  const { account } = useWallet();
+  return useCallback(() => writable ? writableRegistry(account) : readRegistry(), [writable, account]);
 }

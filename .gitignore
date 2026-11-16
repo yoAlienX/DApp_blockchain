@@ -1,11 +1,55 @@
+# Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Environment files & wallet secrets (keep examples)
 .env
 .env.*
+**/.env
+**/.env.*
 !.env.example
+!frontend/.env.example
+*.pem
+*.key
+
+# Hardhat & smart contract build outputs
 artifacts/
 cache/
+typechain-types/
 coverage/
+coverage.json
+
+# Frontend build & Vite cache
 frontend/dist/
 frontend/.vite/
-*.log
+dist/
+build/
 
+# Playwright & test outputs
+test-results/
+playwright-report/
+playwright/.cache/
+blob-report/
+
+# Logs & temp files
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.tmp
+tmp/
+temp/
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Local background scratch files
+chat.md
+markdown_files.zip
